@@ -1,8 +1,13 @@
-const button = document.getElementById("newEntry")
+const newEntryBtn = document.getElementById("newEntry")
 const textbox = document.getElementById("entryTextbox")
 const htmlZone = document.getElementById("entries")
+const deletePopup = document.getElementById("deletePopup")
+const deletePopupMessage = document.getElementById("deletePopupMessage")
+const deletePopupDeleteBtn = document.getElementById("deletePopupDeleteBtn")
+const deletePopupCancelBtn = document.getElementById("deletePopupCancelBtn")
 
 const thelist = JSON.parse(localStorage.getItem("data")) || []
+let idForDelete = null
 
 
 const createEntry = () => {
@@ -15,8 +20,7 @@ const createEntry = () => {
   }
 
   thelist.push(entryData)
-  localStorage.setItem("data", JSON.stringify(thelist));
-  updateView()
+  update()
 
   textbox.value = ""
 }
@@ -29,10 +33,17 @@ const updateState = (element, id) => {
   thelist[id].state = false
   thelist[id].completion_time = null
   }
-  localStorage.setItem("data", JSON.stringify(thelist));
+  update()
 }
 
-const updateView = () => {
+const confirmDelete = (id) => {
+  deletePopup.showModal()
+  deletePopupMessage.textContent = `${thelist[id].title} will be permanently deleted`
+  idForDelete = id
+}
+
+// Handles updating both HTML and localStorage
+const update = () => {
   htmlZone.innerHTML = ""
   let id = 0
 
@@ -44,16 +55,29 @@ const updateView = () => {
     }
 
     htmlZone.innerHTML += `
-      <div id="${id}">
-        <p><input type="checkbox" onchange="updateState(this, ${id})" ${checked}>${element.title}</p>
+      <div class="entry" id="${id}">
+        <p>
+          <input type="checkbox" onchange="updateState(this, ${id})" ${checked}>${element.title}
+          <button onclick="confirmDelete(${id})">rm</button>
+        </p>
       </div>
     `
 
     id++
   })
+
+  localStorage.setItem("data", JSON.stringify(thelist))
 }
 
 
-updateView()
+update()
 
-button.addEventListener("click", createEntry)
+newEntryBtn.addEventListener("click", createEntry)
+
+deletePopupDeleteBtn.addEventListener("click", () => {
+  thelist.splice(idForDelete, 1)
+  update()
+  deletePopup.close()
+})
+
+deletePopupCancelBtn.addEventListener("click", () => deletePopup.close())
