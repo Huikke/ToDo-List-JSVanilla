@@ -21,11 +21,35 @@ const createEntry = () => {
     textbox.value = ""
 }
 
+const updateState = (element, id) => {
+    if (element.checked == true) {
+        thelist[id].state = true
+        thelist[id].completion_time = new Date().toISOString()
+    } else {
+        thelist[id].state = false
+        thelist[id].completion_time = null
+    }
+    localStorage.setItem("data", JSON.stringify(thelist));
+}
+
 const updateView = () => {
     htmlZone.innerHTML = ""
+    let id = 0
 
     thelist.forEach((element) => {
-        htmlZone.innerHTML += `<p><input type="checkbox">${element.title}</p>`
+        // Handles initial checkbox state
+        let checked = ""
+        if (thelist[id].state) {
+            checked = "checked"
+        }
+
+        htmlZone.innerHTML += `
+        <div id="${id}">
+            <p><input type="checkbox" onchange="updateState(this, ${id})" ${checked}>${element.title}</p>
+        </div>
+        `
+
+        id++
     })
 }
 
