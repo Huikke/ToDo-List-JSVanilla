@@ -1,0 +1,15 @@
+h1 {
+  text-align: center;
+}
+
+#entries {
+  text-align: center;
+}
+
+#newEntryForm {
+  text-align: center;
+}
+
+.important {
+  background-color: gold;
+}

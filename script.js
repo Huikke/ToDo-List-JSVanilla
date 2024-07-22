@@ -1,5 +1,6 @@
-const newEntryBtn = document.getElementById("newEntry")
-const textbox = document.getElementById("entryTextbox")
+const newEntryBtn = document.getElementById("newEntryBtn")
+const newEntryTb = document.getElementById("newEntryTb")
+const newEntryForm = document.getElementById("newEntryForm")
 const htmlZone = document.getElementById("entries")
 const deletePopup = document.getElementById("deletePopup")
 const deletePopupMessage = document.getElementById("deletePopupMessage")
@@ -13,8 +14,9 @@ let idForDelete = null
 const createEntry = () => {
   const entryData = {
     state: false,
-    title: textbox.value,
+    title: newEntryTb.value,
     content: "",
+    important: false,
     creation_time: new Date().toISOString(),
     completion_time: null,
   }
@@ -22,7 +24,7 @@ const createEntry = () => {
   thelist.push(entryData)
   update()
 
-  textbox.value = ""
+  newEntryTb.value = ""
 }
 
 const updateState = (element, id) => {
@@ -42,6 +44,11 @@ const confirmDelete = (id) => {
   idForDelete = id
 }
 
+const toggleImportant = (element, id) => {
+  thelist[id].important = !thelist[id].important
+  update()
+}
+
 // Handles updating both HTML and localStorage
 const update = () => {
   htmlZone.innerHTML = ""
@@ -50,14 +57,20 @@ const update = () => {
   thelist.forEach((element) => {
     // Handles initial checkbox state
     let checked = ""
+    let important = ""
     if (thelist[id].state) {
       checked = "checked"
     }
+    if (thelist[id].important) {
+      important = "important"
+    }
+    
 
     htmlZone.innerHTML += `
       <div class="entry" id="${id}">
         <p>
           <input type="checkbox" onchange="updateState(this, ${id})" ${checked}>${element.title}
+          <button class="importantBtn ${important}" onclick="toggleImportant(this, ${id})">star</button>
           <button onclick="confirmDelete(${id})">rm</button>
         </p>
       </div>
@@ -72,7 +85,10 @@ const update = () => {
 
 update()
 
-newEntryBtn.addEventListener("click", createEntry)
+newEntryForm.addEventListener("submit", (e) => {
+  e.preventDefault()
+  createEntry()
+})
 
 deletePopupDeleteBtn.addEventListener("click", () => {
   thelist.splice(idForDelete, 1)
