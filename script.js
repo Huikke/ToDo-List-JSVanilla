@@ -68,11 +68,13 @@ const update = () => {
 
     htmlZone.innerHTML += `
       <div class="entry" id="${id}">
-        <p>
-          <input type="checkbox" onchange="updateState(this, ${id})" ${checked}>${element.title}
-          <button class="importantBtn ${important}" onclick="toggleImportant(this, ${id})">star</button>
-          <button onclick="confirmDelete(${id})">rm</button>
-        </p>
+          <div class="asOne">
+            <input type="checkbox" onchange="updateState(this, ${id})" ${checked}>${element.title}
+          </div>
+          <div class="asOne">
+            <button class="importantBtn ${important}" onclick="toggleImportant(this, ${id})">star</button>
+            <button class="deleteBtn" onclick="confirmDelete(${id})">rm</button>
+          </div>
       </div>
     `
 

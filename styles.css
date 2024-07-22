@@ -1,13 +1,36 @@
-h1 {
-  text-align: center;
+main {
+  width: 90%;
+  margin: 0 auto;
+  background-color: lightblue;
+  padding: 5px 20px 10px;
+  max-width: 600px;
 }
 
-#entries {
-  text-align: center;
+.asOne {
+  display: inline;
 }
 
-#newEntryForm {
-  text-align: center;
+.entry {
+  display: flex;
+  justify-content: space-between;
+  background-color: lightcyan;
+  padding: 4px;
+  margin: 4px;
+}
+
+.newEntryForm {
+  display: flex;
+  margin: 10px 0;
+  height: 30px;
+}
+
+.newEntryTb {
+  width: 100%;
+}
+
+.newEntryBtn {
+  margin: 0 5px;
+  min-width: 80px;
 }
 
 .important {
