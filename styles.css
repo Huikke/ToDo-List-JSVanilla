@@ -6,16 +6,25 @@ main {
   max-width: 600px;
 }
 
-.asOne {
-  display: inline;
-}
-
 .entry {
   display: flex;
   justify-content: space-between;
   background-color: lightcyan;
   padding: 4px;
   margin: 4px;
+}
+
+.entryCb {
+  margin-right: 10px;
+}
+
+.entryLeft {
+  display: flex;
+  align-items: flex-start;
+}
+
+.entryRight {
+  white-space: nowrap;
 }
 
 .newEntryForm {
