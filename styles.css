@@ -18,6 +18,10 @@ main {
   margin-right: 10px;
 }
 
+.entryTitle {
+  overflow-wrap: anywhere;
+}
+
 .entryLeft {
   display: flex;
   align-items: flex-start;
