@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 main {
   width: 90%;
   margin: 0 auto;
@@ -12,6 +16,8 @@ main {
   background-color: lightcyan;
   padding: 4px;
   margin: 4px;
+  border: 2px solid rgb(46, 145, 145);
+  border-radius: 6px;
 }
 
 .entryCb {
