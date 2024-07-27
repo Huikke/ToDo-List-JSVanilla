@@ -10,6 +10,11 @@ main {
   max-width: 600px;
 }
 
+.entries {
+  height: calc(100vh - 170px);
+  overflow-y: auto;
+}
+
 .entry {
   display: flex;
   justify-content: space-between;
