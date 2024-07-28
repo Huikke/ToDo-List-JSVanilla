@@ -99,8 +99,8 @@ main {
 }
 
 .sbCb {
-  width: 20px;
-  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
   margin-right: 6px;
 }
 
