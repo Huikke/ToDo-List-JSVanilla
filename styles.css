@@ -78,8 +78,15 @@ main {
   right: 0;
   background-color: lightblue;
   transition: 0.5s;
-  border-left: 3px solid rgb(53, 53, 53);
+  border-left: 2px solid rgb(53, 53, 53);
   padding: 8px 20px;
+}
+
+.detailsContainer {
+  width: 100%;
+  height: calc(100% - 60px);
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .sbCbAndTitle {
@@ -123,7 +130,5 @@ main {
 }
 
 .sbExitBtn {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
+  margin-top: 10px;
 }
