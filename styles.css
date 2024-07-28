@@ -2,17 +2,24 @@
   box-sizing: border-box;
 }
 
+body {
+  background-color: rgb(16, 134, 165);
+}
+
 main {
   width: 90%;
   margin: 0 auto;
   background-color: lightblue;
   padding: 5px 20px 10px;
   max-width: 600px;
+  border: 2px solid rgb(53, 53, 53);
+  border-radius: 4px;
 }
 
 .entries {
   height: calc(100vh - 170px);
   overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .entry {
@@ -59,4 +66,64 @@ main {
 
 .important {
   background-color: gold;
+  border: 1px solid black;
+  border-radius: 2px;
+}
+
+.detailsSidebar {
+  height: 100%;
+  width: 400px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: lightblue;
+  transition: 0.5s;
+  border-left: 3px solid rgb(53, 53, 53);
+  padding: 8px 20px;
+}
+
+.sbCbAndTitle {
+  display: flex;
+  background-color: lightcyan;
+  padding: 6px;
+  border: 2px solid rgb(46, 145, 145);
+  border-radius: 2px;
+  align-items: flex-start;
+}
+
+.sbCb {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+}
+
+.sbTitle {
+  overflow-wrap: anywhere;
+}
+
+.sbContent {
+  min-height: 100px;
+  background-color: lightcyan;
+  margin-bottom: 8px;
+  padding: 6px;
+  border: 2px solid rgb(46, 145, 145);
+  border-radius: 2px;
+}
+
+.sbOptions {
+  display: flex;
+  justify-content: space-evenly;
+  
+}
+
+.sbImportantBtn, .sbDeleteBtn, .sbExitBtn {
+  width: 40%;
+  height: 30px;
+  font-size: 14px;
+}
+
+.sbExitBtn {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
 }
