@@ -81,9 +81,13 @@ const showDetails = (id) => {
       sbImportantBtn.classList.remove("important")
     }
   } else {
-    detailsSidebar.style.width = "0"
-    currentId = ""
+    closeDetails()
   }
+}
+
+const closeDetails = () => {
+  detailsSidebar.style.width = "0"
+  currentId = ""
 }
 
 // Handles updating both HTML and localStorage
@@ -134,6 +138,7 @@ deletePopupDeleteBtn.addEventListener("click", () => {
   thelist.splice(currentId, 1)
   update()
   deletePopup.close()
+  closeDetails()
 })
 
 deletePopupCancelBtn.addEventListener("click", () => deletePopup.close())
@@ -163,7 +168,4 @@ sbDeleteBtn.addEventListener("click", () => {
   showConfirmDeletePopup()
 })
 
-sbExitBtn.addEventListener("click", () => {
-  detailsSidebar.style.width = "0"
-  currentId = ""
-})
+sbExitBtn.addEventListener("click", closeDetails)
