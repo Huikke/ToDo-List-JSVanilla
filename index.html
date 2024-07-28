@@ -15,20 +15,19 @@
             <button class="newEntryBtn" id="newEntryBtn">New Entry</button>
           </form>
 	  </main>
-    <div class="detailsSidebar">
+    <div class="detailsSidebar" id="detailsSidebar">
       <div class="detailsContainer">
         <h2 class="sbCbAndTitle">
           <input class="sbCb" id="sbCb" type="checkbox" onchange="">
-          <span class="sbTitle" id="sbTitle" contenteditable="true">Title</span>
+          <span class="sbTitle" id="sbTitle" contenteditable="true"></span>
         </h2>
-        <div>Content:</div>
         <div class="sbContent" id="sbContent" placeholder="Write something" contenteditable="true"></div>
         <div class="sbOptions">
           <button class="sbImportantBtn" id="sbImportantBtn" onclick="">Star</button>
           <button class="sbDeleteBtn" id="sbDeleteBtn" onclick="">Delete</button>
         </div>
       </div>
-      <button class="sbExitBtn">Exit</button>
+      <button class="sbExitBtn" id="sbExitBtn">Exit</button>
     </div>
     <dialog id="deletePopup">
       <p id="deletePopupMessage">Entry will be permanently deleted</p>

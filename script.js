@@ -2,15 +2,19 @@ const newEntryBtn = document.getElementById("newEntryBtn")
 const newEntryTb = document.getElementById("newEntryTb")
 const newEntryForm = document.getElementById("newEntryForm")
 const htmlZone = document.getElementById("entries")
+
 const deletePopup = document.getElementById("deletePopup")
 const deletePopupMessage = document.getElementById("deletePopupMessage")
 const deletePopupDeleteBtn = document.getElementById("deletePopupDeleteBtn")
 const deletePopupCancelBtn = document.getElementById("deletePopupCancelBtn")
+
+const detailsSidebar = document.getElementById("detailsSidebar")
 const sbTitle = document.getElementById("sbTitle")
 const sbCb = document.getElementById("sbCb")
 const sbContent = document.getElementById("sbContent")
 const sbImportantBtn = document.getElementById("sbImportantBtn")
 const sbDeleteBtn = document.getElementById("sbDeleteBtn")
+const sbExitBtn = document.getElementById("sbExitBtn")
 
 
 const thelist = JSON.parse(localStorage.getItem("data")) || []
@@ -64,15 +68,21 @@ const toggleImportant = (id) => {
 }
 
 const showDetails = (id) => {
-  currentId = id
+  if (currentId !== id) {
+    currentId = id
+    detailsSidebar.style.width = "400px"
 
-  sbCb.checked = thelist[id].state
-  sbTitle.textContent = thelist[id].title
-  sbContent.innerHTML = thelist[id].content
-  if (thelist[id].important) {
-    sbImportantBtn.classList.add("important")
+    sbCb.checked = thelist[id].state
+    sbTitle.textContent = thelist[id].title
+    sbContent.innerHTML = thelist[id].content
+    if (thelist[id].important) {
+      sbImportantBtn.classList.add("important")
+    } else {
+      sbImportantBtn.classList.remove("important")
+    }
   } else {
-    sbImportantBtn.classList.remove("important")
+    detailsSidebar.style.width = "0"
+    currentId = ""
   }
 }
 
@@ -151,4 +161,9 @@ sbImportantBtn.addEventListener("click", () => {
 
 sbDeleteBtn.addEventListener("click", () => {
   showConfirmDeletePopup()
+})
+
+sbExitBtn.addEventListener("click", () => {
+  detailsSidebar.style.width = "0"
+  currentId = ""
 })
