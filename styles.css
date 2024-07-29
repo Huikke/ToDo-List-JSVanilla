@@ -73,11 +73,11 @@ main {
 .detailsSidebar {
   height: 100%;
   width: 0px;
+  max-width: 100vw;
   position: fixed;
   top: 0;
   right: 0;
   background-color: lightblue;
-  transition: 0.5s;
   border-left: 2px solid rgb(53, 53, 53);
   padding: 20px 0;
 }

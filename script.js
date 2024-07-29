@@ -72,6 +72,7 @@ const toggleImportant = (id) => {
 const showDetails = (id) => {
   if (currentId !== id) {
     currentId = id
+    detailsSidebar.style.transition = "0.5s"
     detailsSidebar.style.width = detailsSbWidth
 
     sbCb.checked = thelist[id].state
@@ -82,14 +83,17 @@ const showDetails = (id) => {
     } else {
       sbImportantBtn.classList.remove("important")
     }
+    window.setTimeout(() => detailsSidebar.style.transition = "0s", 1);
   } else {
     closeDetails()
   }
 }
 
 const closeDetails = () => {
+  detailsSidebar.style.transition = "0.5s"
   detailsSidebar.style.width = "0"
   currentId = ""
+  window.setTimeout(() => detailsSidebar.style.transition = "0s", 1);
 }
 
 // Handles updating both HTML and localStorage
