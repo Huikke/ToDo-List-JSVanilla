@@ -15,10 +15,12 @@ const sbContent = document.getElementById("sbContent")
 const sbImportantBtn = document.getElementById("sbImportantBtn")
 const sbDeleteBtn = document.getElementById("sbDeleteBtn")
 const sbExitBtn = document.getElementById("sbExitBtn")
+const dragbar = document.getElementById("dragbar")
 
 
 const thelist = JSON.parse(localStorage.getItem("data")) || []
 let currentId = null
+let detailsSbWidth = "400px"
 
 
 const createEntry = () => {
@@ -70,7 +72,7 @@ const toggleImportant = (id) => {
 const showDetails = (id) => {
   if (currentId !== id) {
     currentId = id
-    detailsSidebar.style.width = "400px"
+    detailsSidebar.style.width = detailsSbWidth
 
     sbCb.checked = thelist[id].state
     sbTitle.textContent = thelist[id].title
@@ -169,3 +171,31 @@ sbDeleteBtn.addEventListener("click", () => {
 })
 
 sbExitBtn.addEventListener("click", closeDetails)
+
+const dragbarMove = (event) => {
+  let mouseXPos = event.clientX
+  if (window.innerWidth - mouseXPos > 200) {
+    detailsSidebar.style.width = `${window.innerWidth - mouseXPos}px`
+  } else {
+    detailsSidebar.style.width = "200px"
+  }
+}
+
+const dragbarUp = (event) => {
+  let mouseXPos = event.clientX
+  if (window.innerWidth - mouseXPos > 200) {
+    detailsSbWidth = `${window.innerWidth - event.clientX}px`
+  } else {
+    detailsSbWidth = "200px"
+  }
+
+  document.querySelector("body").classList.remove("noSelect")
+  document.removeEventListener("mousemove", dragbarMove)
+  document.removeEventListener("mouseup", dragbarUp)
+}
+
+dragbar.addEventListener("mousedown", () => {
+  document.querySelector("body").classList.add("noSelect")
+  document.addEventListener("mousemove", dragbarMove)
+  document.addEventListener("mouseup", dragbarUp)
+})

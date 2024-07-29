@@ -133,3 +133,21 @@ main {
 .sbExitBtn {
   margin: 16px 0 0 16px;
 }
+
+#dragbar {
+  width: 10px;
+  height: 100%;
+  background-color: lightblue;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: col-resize;
+}
+
+#dragbar:hover {
+  background-color: DodgerBlue;
+}
+
+.noSelect {
+  user-select: none;
+}
