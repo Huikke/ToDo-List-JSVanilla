@@ -16,6 +16,60 @@ main {
   border-radius: 4px;
 }
 
+
+
+.listTitle {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.listDropdown {
+  display: inline-block;
+  position: relative;
+  left: 6px;
+  bottom: 6px;
+}
+
+.listDropdownBtn {
+  font-size: 20px;
+  font-weight: bold;
+  background-color: rgb(153, 204, 221);
+  padding: 7px 12px;
+  border: 1px solid black;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+
+.listDropdownContent {
+  display: none;
+  position: absolute;
+  background-color: rgb(153, 204, 221);
+  padding: 0; /* remove list indent */ 
+  margin: 0;
+  border: 1px solid black;
+  border-radius: 3px;
+  min-width: 160px;
+}
+
+.listDropdownContent li {
+  list-style-type: none;
+  padding: 4px;
+}
+
+.listDropdownBtn:hover, .listDropdownContent li:hover {
+  background-color: rgb(122, 162, 175);
+}
+
+.listOption {
+  font-weight: bold;
+}
+
+.dropdownTb {
+  width: 100%;
+}
+
+
+
 .entriesContainer {
   height: calc(100vh - 170px);
   overflow-y: auto;
@@ -81,6 +135,8 @@ main {
   border-left: 2px solid rgb(53, 53, 53);
   padding: 20px 0;
 }
+
+
 
 .detailsContainer {
   width: 100%;
@@ -148,60 +204,12 @@ main {
   background-color: DodgerBlue;
 }
 
+
+
 .noSelect {
   user-select: none;
 }
 
-.listTitle {
-  display: inline-block;
-  margin-right: 10px;
-}
-
-.listDropdown {
-  display: inline-block;
-  position: relative;
-  left: 6px;
-  bottom: 6px;
-}
-
-.listDropdownBtn {
-  font-size: 20px;
-  font-weight: bold;
-  background-color: rgb(153, 204, 221);
-  padding: 7px 12px;
-  border: 1px solid black;
-  border-radius: 3px;
-  margin-right: 10px;
-}
-
-.listDropdownContent {
-  display: none;
-  position: absolute;
-  background-color: rgb(153, 204, 221);
-  padding: 0; /* remove list indent */ 
-  margin: 0;
-  border: 1px solid black;
-  border-radius: 3px;
-  min-width: 160px;
-}
-
-.listDropdownContent li {
-  list-style-type: none;
-  padding: 4px;
-}
-
-.listDropdownBtn:hover, .listDropdownContent li:hover {
-  background-color: rgb(122, 162, 175);
-}
-
-.listOption {
-  font-weight: bold;
-}
-
 .show {
   display: block;
-}
-
-.dropdownTb {
-  width: 100%;
 }
