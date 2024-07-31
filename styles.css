@@ -151,3 +151,57 @@ main {
 .noSelect {
   user-select: none;
 }
+
+.listTitle {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.listDropdown {
+  display: inline-block;
+  position: relative;
+  left: 6px;
+  bottom: 6px;
+}
+
+.listDropdownBtn {
+  font-size: 20px;
+  font-weight: bold;
+  background-color: rgb(153, 204, 221);
+  padding: 7px 12px;
+  border: 1px solid black;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+
+.listDropdownContent {
+  display: none;
+  position: absolute;
+  background-color: rgb(153, 204, 221);
+  padding: 0; /* remove list indent */ 
+  margin: 0;
+  border: 1px solid black;
+  border-radius: 3px;
+  min-width: 160px;
+}
+
+.listDropdownContent li {
+  list-style-type: none;
+  padding: 4px;
+}
+
+.listDropdownBtn:hover, .listDropdownContent li:hover {
+  background-color: rgb(122, 162, 175);
+}
+
+.listOption {
+  font-weight: bold;
+}
+
+.show {
+  display: block;
+}
+
+.dropdownTb {
+  width: 100%;
+}

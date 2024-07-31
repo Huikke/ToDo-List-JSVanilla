@@ -17,7 +17,11 @@ const sbDeleteBtn = document.getElementById("sbDeleteBtn")
 const sbExitBtn = document.getElementById("sbExitBtn")
 const dragbar = document.getElementById("dragbar")
 
+const listTitle = document.getElementById("listTitle")
+const listDropdownBtn = document.getElementById("listDropdownBtn")
+const listDropdownContent = document.getElementById("listDropdownContent")
 
+const thelists = []
 const thelist = JSON.parse(localStorage.getItem("data")) || []
 let currentId = null
 let detailsSbWidth = "400px"
@@ -92,7 +96,7 @@ const showDetails = (id) => {
 const closeDetails = () => {
   detailsSidebar.style.transition = "0.5s"
   detailsSidebar.style.width = "0"
-  currentId = ""
+  currentId = null
   window.setTimeout(() => detailsSidebar.style.transition = "0s", 1);
 }
 
@@ -132,8 +136,30 @@ const update = () => {
   localStorage.setItem("data", JSON.stringify(thelist))
 }
 
+const updateListDropdown = () => {
+  listDropdownContent.innerHTML = ""
+  let id = 0
+
+  thelists.forEach((element) => {
+    listDropdownContent.innerHTML += `
+    <li class="list" id="${id}">
+      ${element}
+    </li>
+    `
+
+    id++
+  })
+
+  listDropdownContent.innerHTML += `
+    <li class="listOption" id="addList" onclick="summonDropdownForm(this)">Add List</li>
+    <li class="listOption" id="renameList" onclick="summonDropdownForm(this)">Rename List</li>
+    <li class="listOption" id="removeList" onclick="showConfirmDeletePopup()">Remove List</li>
+  `
+}
+
 
 update()
+updateListDropdown()
 
 newEntryForm.addEventListener("submit", (e) => {
   e.preventDefault()
@@ -141,10 +167,14 @@ newEntryForm.addEventListener("submit", (e) => {
 })
 
 deletePopupDeleteBtn.addEventListener("click", () => {
-  thelist.splice(currentId, 1)
-  update()
+  if (currentId != null) {
+    thelist.splice(currentId, 1)
+    update()
+    closeDetails()
+  } else {
+    console.log("Nothing to remove!")
+  }
   deletePopup.close()
-  closeDetails()
 })
 
 deletePopupCancelBtn.addEventListener("click", () => deletePopup.close())
@@ -176,6 +206,7 @@ sbDeleteBtn.addEventListener("click", () => {
 
 sbExitBtn.addEventListener("click", closeDetails)
 
+
 const dragbarMove = (event) => {
   let mouseXPos = event.clientX
   if (window.innerWidth - mouseXPos > 200) {
@@ -203,3 +234,48 @@ dragbar.addEventListener("mousedown", () => {
   document.addEventListener("mousemove", dragbarMove)
   document.addEventListener("mouseup", dragbarUp)
 })
+
+
+// Opens list dropdown
+listDropdownBtn.addEventListener("click", () => {
+  updateListDropdown()
+  listDropdownContent.classList.toggle("show")
+})
+
+// Closes list dropdown
+window.onclick = (event) => {
+  if (!event.target.matches(".listDropdownBtn") && !event.target.matches(".listOption")) {
+    listDropdownContent.classList.remove("show")
+  }
+}
+
+const summonDropdownForm = (element) => {
+  switch (element.id) {
+    case "addList":
+      btnText = "Add" 
+      break;
+    case "renameList":
+      btnText = "Rename"
+      break;
+  }
+
+  element.onclick = null
+  element.innerHTML = `
+    <form class="" type="submit" onsubmit="${element.id}(event)">
+      <input class="dropdownTb" id="${element.id}Tb" type="text">
+      <button class="">${btnText}</button>
+    </form>
+  `
+}
+
+const addList = (e) => {
+  e.preventDefault()
+  thelists.push(document.getElementById("addListTb").value)
+  updateListDropdown()
+}
+
+const renameList = (e) => {
+  e.preventDefault()
+  listTitle.textContent = document.getElementById("renameListTb").value
+  updateListDropdown()
+}
