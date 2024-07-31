@@ -16,16 +16,17 @@ const sbDeleteBtn = document.getElementById("sbDeleteBtn")
 const sbExitBtn = document.getElementById("sbExitBtn")
 const dragbar = document.getElementById("dragbar")
 
-const deletePopup = document.getElementById("deletePopup")
-const deletePopupMessage = document.getElementById("deletePopupMessage")
-const deletePopupDeleteBtn = document.getElementById("deletePopupDeleteBtn")
-const deletePopupCancelBtn = document.getElementById("deletePopupCancelBtn")
+const delPopup = document.getElementById("delPopup")
+const delPopupMsg = document.getElementById("delPopupMsg")
+const delPopupDeleteBtn = document.getElementById("delPopupDeleteBtn")
+const delPopupCancelBtn = document.getElementById("delPopupCancelBtn")
 
 const data = JSON.parse(localStorage.getItem("toDoListData")) || []
 
 let currentList = 0
 let currentId = null
 let detailsSbWidth = "400px"
+let removeListBool = false
 
 
 
@@ -57,6 +58,11 @@ const renameList = (e) => {
   listTitle.textContent = newName
   data[currentList].title = newName
   updateListDropdown()
+}
+
+const switchList = (id) => {
+  currentList = id
+  update()
 }
 
 
@@ -192,8 +198,8 @@ sbImportantBtn.addEventListener("click", () => {
   toggleImportant(currentId)
 })
 
-sbDeleteBtn.addEventListener("click", () => {
-  showConfirmDeletePopup()
+sbDeleteBtn.addEventListener("click", (event) => {
+  showConfirmDeletePopup(event.currentTarget)
 })
 
 sbExitBtn.addEventListener("click", closeDetails)
@@ -229,23 +235,41 @@ dragbar.addEventListener("mousedown", () => {
 
 
 
-const showConfirmDeletePopup = () => {
-  deletePopup.showModal()
-  deletePopupMessage.textContent = `${data[currentList].entries[currentId].title} will be permanently deleted`
+const showConfirmDeletePopup = (element) => {
+  let name = ""
+  delPopup.showModal()
+
+  if (element.id == "removeList") {
+    removeListBool = true
+    name = data[currentList].title
+  } else {
+    name = data[currentList].entries[currentId].title
+  }
+
+  delPopupMsg.textContent = `${name} will be permanently deleted`
 }
 
-deletePopupDeleteBtn.addEventListener("click", () => {
-  if (currentId != null) {
+delPopupDeleteBtn.addEventListener("click", () => {
+  if (!removeListBool) {
     data[currentList].entries.splice(currentId, 1)
-    update()
-    closeDetails()
-  } else {
-    console.log("Nothing to remove!")
+  } else if (removeListBool) {
+    if (data.length <= 1) {
+      alert("Can't remove the only list!")
+    } else {
+      data.splice(currentList, 1)
+    }
   }
-  deletePopup.close()
+
+  removeListBool = false
+  update()
+  closeDetails()
+  delPopup.close()
 })
 
-deletePopupCancelBtn.addEventListener("click", () => deletePopup.close())
+delPopupCancelBtn.addEventListener("click", () => {
+  removeListBool = false
+  delPopup.close()
+})
 
 
 
@@ -266,8 +290,8 @@ const update = () => {
     if (data[currentList].entries[id].important) {
       important = "important"
     }
-    
-    
+
+
     entriesContainer.innerHTML += `
       <article class="entry" id="${id}">
           <div class="entryLeft">
@@ -293,7 +317,7 @@ const updateListDropdown = () => {
 
   data.forEach((element) => {
     listDropdownContent.innerHTML += `
-    <li class="list" id="${id}">
+    <li class="list" id="${id}" onclick="switchList(${id})">
       ${element.title}
     </li>
     `
@@ -304,7 +328,7 @@ const updateListDropdown = () => {
   listDropdownContent.innerHTML += `
     <li class="listOption" id="addList" onclick="summonDropdownForm(this)">Add List</li>
     <li class="listOption" id="renameList" onclick="summonDropdownForm(this)">Rename List</li>
-    <li class="listOption" id="removeList" onclick="showConfirmDeletePopup()">Remove List</li>
+    <li class="listOption" id="removeList" onclick="showConfirmDeletePopup(this)">Remove List</li>
   `
 
   localStorage.setItem("toDoListData", JSON.stringify(data))
