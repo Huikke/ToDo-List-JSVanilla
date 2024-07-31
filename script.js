@@ -1,7 +1,7 @@
 const newEntryBtn = document.getElementById("newEntryBtn")
 const newEntryTb = document.getElementById("newEntryTb")
 const newEntryForm = document.getElementById("newEntryForm")
-const htmlZone = document.getElementById("entries")
+const entriesContainer = document.getElementById("entriesContainer")
 
 const deletePopup = document.getElementById("deletePopup")
 const deletePopupMessage = document.getElementById("deletePopupMessage")
@@ -21,11 +21,11 @@ const listTitle = document.getElementById("listTitle")
 const listDropdownBtn = document.getElementById("listDropdownBtn")
 const listDropdownContent = document.getElementById("listDropdownContent")
 
-const thelists = []
-const thelist = JSON.parse(localStorage.getItem("data")) || []
+const data = JSON.parse(localStorage.getItem("toDoListData")) || []
+
+let currentList = 0
 let currentId = null
 let detailsSbWidth = "400px"
-
 
 const createEntry = () => {
   const entryData = {
@@ -38,7 +38,7 @@ const createEntry = () => {
     content_edit_time: null,
   }
 
-  thelist.push(entryData)
+  data[currentList].entries.push(entryData)
   update()
 
   newEntryTb.value = ""
@@ -46,27 +46,27 @@ const createEntry = () => {
 
 const updateState = (element, id) => {
   if (element.checked == true) {
-    thelist[id].state = true
-    thelist[id].completion_time = new Date().toISOString()
+    data[currentList].entries[id].state = true
+    data[currentList].entries[id].completion_time = new Date().toISOString()
   } else {
-    thelist[id].state = false
-    thelist[id].completion_time = null
+    data[currentList].entries[id].state = false
+    data[currentList].entries[id].completion_time = null
   }
   update()
-  sbCb.checked = thelist[id].state // Also updates sidebar checkbox
+  sbCb.checked = data[currentList].entries[id].state // Also updates sidebar checkbox
 }
 
 const showConfirmDeletePopup = () => {
   deletePopup.showModal()
-  deletePopupMessage.textContent = `${thelist[currentId].title} will be permanently deleted`
+  deletePopupMessage.textContent = `${data[currentList].entries[currentId].title} will be permanently deleted`
 }
 
 const toggleImportant = (id) => {
-  thelist[id].important = !thelist[id].important
+  data[currentList].entries[id].important = !data[currentList].entries[id].important
   update()
 
   // For sidebar
-  if (thelist[id].important) {
+  if (data[currentList].entries[id].important) {
     sbImportantBtn.classList.add("important")
   } else {
     sbImportantBtn.classList.remove("important")
@@ -79,10 +79,10 @@ const showDetails = (id) => {
     detailsSidebar.style.transition = "0.5s"
     detailsSidebar.style.width = detailsSbWidth
 
-    sbCb.checked = thelist[id].state
-    sbTitle.textContent = thelist[id].title
-    sbContent.innerHTML = thelist[id].content
-    if (thelist[id].important) {
+    sbCb.checked = data[currentList].entries[id].state
+    sbTitle.textContent = data[currentList].entries[id].title
+    sbContent.innerHTML = data[currentList].entries[id].content
+    if (data[currentList].entries[id].important) {
       sbImportantBtn.classList.add("important")
     } else {
       sbImportantBtn.classList.remove("important")
@@ -102,22 +102,24 @@ const closeDetails = () => {
 
 // Handles updating both HTML and localStorage
 const update = () => {
-  htmlZone.innerHTML = ""
+  entriesContainer.innerHTML = ""
   let id = 0
 
-  thelist.forEach((element) => {
+  listTitle.textContent = data[currentList].title
+
+  data[currentList].entries.forEach((element) => {
     // Handles initial checkbox state
     let checked = ""
     let important = ""
-    if (thelist[id].state) {
+    if (data[currentList].entries[id].state) {
       checked = "checked"
     }
-    if (thelist[id].important) {
+    if (data[currentList].entries[id].important) {
       important = "important"
     }
     
-
-    htmlZone.innerHTML += `
+    
+    entriesContainer.innerHTML += `
       <article class="entry" id="${id}">
           <div class="entryLeft">
             <input class="entryCb" type="checkbox" onchange="updateState(this, ${id})" ${checked}>
@@ -133,17 +135,17 @@ const update = () => {
     id++
   })
 
-  localStorage.setItem("data", JSON.stringify(thelist))
+  localStorage.setItem("toDoListData", JSON.stringify(data))
 }
 
 const updateListDropdown = () => {
   listDropdownContent.innerHTML = ""
   let id = 0
 
-  thelists.forEach((element) => {
+  data.forEach((element) => {
     listDropdownContent.innerHTML += `
     <li class="list" id="${id}">
-      ${element}
+      ${element.title}
     </li>
     `
 
@@ -155,11 +157,9 @@ const updateListDropdown = () => {
     <li class="listOption" id="renameList" onclick="summonDropdownForm(this)">Rename List</li>
     <li class="listOption" id="removeList" onclick="showConfirmDeletePopup()">Remove List</li>
   `
+
+  localStorage.setItem("toDoListData", JSON.stringify(data))
 }
-
-
-update()
-updateListDropdown()
 
 newEntryForm.addEventListener("submit", (e) => {
   e.preventDefault()
@@ -168,7 +168,7 @@ newEntryForm.addEventListener("submit", (e) => {
 
 deletePopupDeleteBtn.addEventListener("click", () => {
   if (currentId != null) {
-    thelist.splice(currentId, 1)
+    data[currentList].entries.splice(currentId, 1)
     update()
     closeDetails()
   } else {
@@ -184,15 +184,15 @@ sbCb.addEventListener("change", () => {
 })
 
 sbTitle.addEventListener("blur", () => {
-  thelist[currentId].title = sbTitle.textContent
+  data[currentList].entries[currentId].title = sbTitle.textContent
   update()
 })
 
 sbContent.addEventListener("blur", () => {
-  if (thelist[currentId].content != sbTitle.textContent) {
-    thelist[currentId].content_edit_time = new Date().toISOString()
+  if (data[currentList].entries[currentId].content != sbTitle.textContent) {
+    data[currentList].entries[currentId].content_edit_time = new Date().toISOString()
   }
-  thelist[currentId].content = sbContent.innerHTML
+  data[currentList].entries[currentId].content = sbContent.innerHTML
   update()
 })
 
@@ -267,15 +267,41 @@ const summonDropdownForm = (element) => {
     </form>
   `
 }
-
+ 
+// Parameter e serves two purposes: First is as event.
+// Second is triggered by false, is used when data is empty, for making the first list
 const addList = (e) => {
-  e.preventDefault()
-  thelists.push(document.getElementById("addListTb").value)
+  let title = ""
+  if (e) {
+    e.preventDefault()
+    title = document.getElementById("addListTb").value;
+  } else {
+    title = "To Do List"    
+  }
+
+  const newList = {
+    title: title,
+    creation_time: new Date().toISOString(),
+    entries: [],
+  }
+
+  data.push(newList)
   updateListDropdown()
 }
 
 const renameList = (e) => {
   e.preventDefault()
-  listTitle.textContent = document.getElementById("renameListTb").value
+  
+  newName = document.getElementById("renameListTb").value
+  listTitle.textContent = newName
+  data[currentList].title = newName
   updateListDropdown()
 }
+
+
+if (data.length === 0) {
+  addList(false)
+}
+
+update()
+updateListDropdown()
