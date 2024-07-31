@@ -244,7 +244,7 @@ listDropdownBtn.addEventListener("click", () => {
 
 // Closes list dropdown
 window.onclick = (event) => {
-  if (!event.target.matches(".listDropdownBtn") && !event.target.matches(".listOption")) {
+  if (!event.target.matches(".listDropdownBtn") && !event.target.matches(".listOption") && !event.target.matches(".ddMenu")) {
     listDropdownContent.classList.remove("show")
   }
 }
@@ -261,9 +261,9 @@ const summonDropdownForm = (element) => {
 
   element.onclick = null
   element.innerHTML = `
-    <form class="" type="submit" onsubmit="${element.id}(event)">
-      <input class="dropdownTb" id="${element.id}Tb" type="text">
-      <button class="">${btnText}</button>
+    <form class="ddMenu" type="submit" onsubmit="${element.id}(event)">
+      <input class="dropdownTb ddMenu" id="${element.id}Tb" type="text">
+      <button class="ddMenu">${btnText}</button>
     </form>
   `
 }
