@@ -205,35 +205,6 @@ sbDeleteBtn.addEventListener("click", (event) => {
 sbExitBtn.addEventListener("click", closeDetails)
 
 
-const dragbarMove = (event) => {
-  let mouseXPos = event.clientX
-  if (window.innerWidth - mouseXPos > 200) {
-    detailsSidebar.style.width = `${window.innerWidth - mouseXPos}px`
-  } else {
-    detailsSidebar.style.width = "200px"
-  }
-}
-
-const dragbarUp = (event) => {
-  let mouseXPos = event.clientX
-  if (window.innerWidth - mouseXPos > 200) {
-    detailsSbWidth = `${window.innerWidth - event.clientX}px`
-  } else {
-    detailsSbWidth = "200px"
-  }
-
-  document.querySelector("body").classList.remove("noSelect")
-  document.removeEventListener("mousemove", dragbarMove)
-  document.removeEventListener("mouseup", dragbarUp)
-}
-
-dragbar.addEventListener("mousedown", () => {
-  document.querySelector("body").classList.add("noSelect")
-  document.addEventListener("mousemove", dragbarMove)
-  document.addEventListener("mouseup", dragbarUp)
-})
-
-
 
 const showConfirmDeletePopup = (element) => {
   let name = ""
@@ -257,6 +228,7 @@ delPopupDeleteBtn.addEventListener("click", () => {
       alert("Can't remove the only list!")
     } else {
       data.splice(currentList, 1)
+      currentList = 0
     }
   }
 
@@ -270,6 +242,99 @@ delPopupCancelBtn.addEventListener("click", () => {
   removeListBool = false
   delPopup.close()
 })
+
+
+
+const dragbarMove = (event) => {
+  let mouseXPos = event.clientX
+  if (window.innerWidth - mouseXPos > 200) {
+    detailsSidebar.style.width = `${window.innerWidth - mouseXPos}px`
+  } else {
+    detailsSidebar.style.width = "200px"
+  }
+}
+
+const dragbarUp = (event) => {
+  let mouseXPos = event.clientX
+  if (window.innerWidth - mouseXPos > 200) {
+    detailsSbWidth = `${window.innerWidth - mouseXPos}px`
+  } else {
+    detailsSbWidth = "200px"
+  }
+
+  document.querySelector("body").classList.remove("noSelect")
+  document.removeEventListener("mousemove", dragbarMove)
+  document.removeEventListener("mouseup", dragbarUp)
+}
+
+dragbar.addEventListener("mousedown", () => {
+  document.querySelector("body").classList.add("noSelect")
+  document.addEventListener("mousemove", dragbarMove)
+  document.addEventListener("mouseup", dragbarUp)
+})
+
+
+
+let moveTargetEl = ""
+let moveToIdEl = ""
+
+const moveEntryBegin = (event, element) => {
+  moveTargetEl = element.parentElement.parentElement
+
+  moveTargetEl.classList.add("onMove")
+  document.addEventListener("mousemove", moveEntryMouseMove)
+  document.addEventListener("mouseup", moveEntryEnd)
+  moveEntryMouseMove(event)
+
+  for (let id = 0; id < data[currentList].entries.length; id++) {
+    document.getElementById(`e${id}`).addEventListener("mouseenter", moveEntryEnterCont)
+    document.getElementById(`e${id}`).addEventListener("mouseleave", moveEntryLeaveCont)
+  }
+}
+
+const moveEntryEnd = () => {
+  moveTargetEl.classList.remove("onMove")
+  document.removeEventListener("mousemove", moveEntryMouseMove)
+  document.removeEventListener("mouseup", moveEntryEnd)
+
+  for (let id = 0; id < data[currentList].entries.length; id++) {
+    document.getElementById(`e${id}`).removeEventListener("mouseenter", moveEntryEnterCont)
+    document.getElementById(`e${id}`).removeEventListener("mouseleave", moveEntryLeaveCont)
+  }
+
+  if (moveToIdEl) {
+    startId = Number(moveTargetEl.id.slice(1))
+    endId = Number(moveToIdEl.id.slice(1))
+    itemToMove = data[currentList].entries[startId]
+    
+    data[currentList].entries.splice(startId, 1)
+    data[currentList].entries.splice(endId, 0, itemToMove)
+    update()
+  }
+}
+
+const moveEntryMouseMove = (event) => {
+  moveTargetEl.style.left = `${event.clientX}px`
+  moveTargetEl.style.top = `${event.clientY}px`
+}
+
+const moveEntryEnterCont = (event) => {
+  moveToIdEl = event.target
+  if (Number(moveTargetEl.id.slice(1)) <  Number(moveToIdEl.id.slice(1))) {
+    moveToIdEl.style.borderBottomColor = "gold"
+  } else if (Number(moveTargetEl.id.slice(1)) > Number(moveToIdEl.id.slice(1))) {
+    moveToIdEl.style.borderTopColor = "gold"
+  }
+}
+
+const moveEntryLeaveCont = () => {
+  if (moveToIdEl) {
+    moveToIdEl.style.borderTopColor = "rgb(46, 145, 145)"
+    moveToIdEl.style.borderBottomColor = "rgb(46, 145, 145)"
+  }
+  moveToIdEl = ""
+}
+
 
 
 
@@ -293,12 +358,13 @@ const update = () => {
 
 
     entriesContainer.innerHTML += `
-      <article class="entry" id="${id}">
+      <article class="entry" id="e${id}">
           <div class="entryLeft">
             <input class="entryCb" type="checkbox" onchange="updateState(this, ${id})" ${checked}>
             <span class="entryTitle">${element.title}<span>
           </div>
           <div class="entryRight">
+            <button class="moveButton" onmousedown="moveEntryBegin(event, this)">↕</button>
             <button class="importantBtn ${important}" onclick="toggleImportant(${id})">star</button>
             <button class="detailsBtn" onclick="showDetails(${id})">...</button>
           </div>
@@ -317,7 +383,7 @@ const updateListDropdown = () => {
 
   data.forEach((element) => {
     listDropdownContent.innerHTML += `
-    <li class="list" id="${id}" onclick="switchList(${id})">
+    <li class="list" id="l${id}" onclick="switchList(${id})">
       ${element.title}
     </li>
     `

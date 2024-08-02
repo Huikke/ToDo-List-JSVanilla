@@ -120,6 +120,7 @@ main {
 
 .important {
   background-color: gold;
+  padding: 2px 7.2px;
   border: 1px solid black;
   border-radius: 2px;
 }
@@ -212,4 +213,9 @@ main {
 
 .show {
   display: block;
+}
+
+.onMove {
+  position: fixed;
+  max-width: 530px;
 }
