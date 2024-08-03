@@ -65,7 +65,7 @@ const renameList = (e) => {
 
 const switchList = (id) => {
   currentList = id
-  update()
+  updateEntries()
 }
 
 
@@ -116,7 +116,7 @@ const createEntry = () => {
   }
 
   data[currentList].entries.push(entryData)
-  update()
+  updateEntries()
 
   newEntryTb.value = ""
 }
@@ -126,23 +126,10 @@ newEntryForm.addEventListener("submit", (e) => {
   createEntry()
 })
 
-const updateState = (element, id) => {
-  if (element.checked == true) {
-    data[currentList].entries[id].state = true
-    data[currentList].entries[id].completion_time = new Date().toISOString()
-  } else {
-    data[currentList].entries[id].state = false
-    data[currentList].entries[id].completion_time = null
-  }
-  update()
-  updateTimestamp(currentId)
-  sbCb.checked = data[currentList].entries[id].state // Also updates sidebar checkbox
-}
-
 
 const toggleImportant = (id) => {
   data[currentList].entries[id].important = !data[currentList].entries[id].important
-  update()
+  updateEntries()
 
   // For sidebar
   if (data[currentList].entries[id].important) {
@@ -193,7 +180,7 @@ sbTitle.addEventListener("blur", () => {
   if (data[currentList].entries[currentId].title != sbTitle.textContent) {
     data[currentList].entries[currentId].modification_time = new Date().toISOString()
     data[currentList].entries[currentId].title = sbTitle.textContent
-    update()
+    updateEntries()
     updateTimestamp(currentId)
   }
 })
@@ -202,7 +189,7 @@ sbContent.addEventListener("blur", () => {
   if (data[currentList].entries[currentId].content != sbContent.textContent) {
     data[currentList].entries[currentId].modification_time = new Date().toISOString()
     data[currentList].entries[currentId].content = sbContent.innerHTML
-    update()
+    updateEntries()
     updateTimestamp(currentId)
   }
 })
@@ -246,7 +233,7 @@ delPopupDeleteBtn.addEventListener("click", () => {
   }
 
   removeListBool = false
-  update()
+  updateEntries()
   closeDetails()
   delPopup.close()
 })
@@ -322,7 +309,7 @@ const moveEntryEnd = () => {
     
     data[currentList].entries.splice(startId, 1)
     data[currentList].entries.splice(endId, 0, itemToMove)
-    update()
+    updateEntries()
   }
 }
 
@@ -352,7 +339,7 @@ const moveEntryLeaveCont = () => {
 
 
 // Handles updating both HTML and localStorage
-const update = () => {
+const updateEntries = () => {
   entriesContainer.innerHTML = ""
   let id = 0
 
@@ -413,6 +400,21 @@ const updateListDropdown = () => {
   localStorage.setItem("toDoListData", JSON.stringify(data))
 }
 
+const updateState = (element, id) => {
+  if (element.checked == true) {
+    data[currentList].entries[id].state = true
+    data[currentList].entries[id].completion_time = new Date().toISOString()
+  } else {
+    data[currentList].entries[id].state = false
+    data[currentList].entries[id].completion_time = null
+  }
+  updateEntries()
+  if (currentId) {
+    updateTimestamp(currentId)
+  }
+  sbCb.checked = data[currentList].entries[id].state // Also updates sidebar checkbox
+}
+
 const updateTimestamp = (id) => {
   const creation_time = data[currentList].entries[id].creation_time
   const modification_time = data[currentList].entries[id].modification_time
@@ -445,5 +447,5 @@ const timestampConverter = (ts) => {
 
 if (data.length === 0) {addList(false)}
 
-update()
+updateEntries()
 updateListDropdown()
