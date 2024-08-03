@@ -178,7 +178,6 @@ main {
 .sbOptions {
   display: flex;
   justify-content: space-evenly;
-  
 }
 
 .sbImportantBtn, .sbDeleteBtn, .sbExitBtn {
@@ -187,8 +186,21 @@ main {
   font-size: 14px;
 }
 
+.sbFooter {
+  display: flex;
+  justify-content: space-evenly;
+}
+
 .sbExitBtn {
-  margin: 16px 0 0 16px;
+  margin: 8px 0 0 16px;
+}
+
+.timestampContainer {
+  margin-top: 4px;
+}
+
+.timestamp {
+  margin: 4px 0 0 16px;
 }
 
 #dragbar {

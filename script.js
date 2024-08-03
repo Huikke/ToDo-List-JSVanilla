@@ -13,6 +13,9 @@ const sbTitle = document.getElementById("sbTitle")
 const sbContent = document.getElementById("sbContent")
 const sbImportantBtn = document.getElementById("sbImportantBtn")
 const sbDeleteBtn = document.getElementById("sbDeleteBtn")
+const sbCreationTime = document.getElementById("sbCreationTime")
+const sbModificationTime = document.getElementById("sbModificationTime")
+const sbCompletionTime = document.getElementById("sbCompletionTime")
 const sbExitBtn = document.getElementById("sbExitBtn")
 const dragbar = document.getElementById("dragbar")
 
@@ -108,8 +111,8 @@ const createEntry = () => {
     content: "",
     important: false,
     creation_time: new Date().toISOString(),
-    completion_time: null,
-    content_edit_time: null,
+    // completion_time: null,
+    // modification_time: null,
   }
 
   data[currentList].entries.push(entryData)
@@ -132,6 +135,7 @@ const updateState = (element, id) => {
     data[currentList].entries[id].completion_time = null
   }
   update()
+  updateTimestamp(currentId)
   sbCb.checked = data[currentList].entries[id].state // Also updates sidebar checkbox
 }
 
@@ -159,11 +163,15 @@ const showDetails = (id) => {
     sbCb.checked = data[currentList].entries[id].state
     sbTitle.textContent = data[currentList].entries[id].title
     sbContent.innerHTML = data[currentList].entries[id].content
+
     if (data[currentList].entries[id].important) {
       sbImportantBtn.classList.add("important")
     } else {
       sbImportantBtn.classList.remove("important")
     }
+
+    updateTimestamp(id)
+
     window.setTimeout(() => detailsSidebar.style.transition = "0s", 1);
   } else {
     closeDetails()
@@ -182,16 +190,21 @@ sbCb.addEventListener("change", () => {
 })
 
 sbTitle.addEventListener("blur", () => {
-  data[currentList].entries[currentId].title = sbTitle.textContent
-  update()
+  if (data[currentList].entries[currentId].title != sbTitle.textContent) {
+    data[currentList].entries[currentId].modification_time = new Date().toISOString()
+    data[currentList].entries[currentId].title = sbTitle.textContent
+    update()
+    updateTimestamp(currentId)
+  }
 })
 
 sbContent.addEventListener("blur", () => {
-  if (data[currentList].entries[currentId].content != sbTitle.textContent) {
-    data[currentList].entries[currentId].content_edit_time = new Date().toISOString()
+  if (data[currentList].entries[currentId].content != sbContent.textContent) {
+    data[currentList].entries[currentId].modification_time = new Date().toISOString()
+    data[currentList].entries[currentId].content = sbContent.innerHTML
+    update()
+    updateTimestamp(currentId)
   }
-  data[currentList].entries[currentId].content = sbContent.innerHTML
-  update()
 })
 
 sbImportantBtn.addEventListener("click", () => {
@@ -400,6 +413,34 @@ const updateListDropdown = () => {
   localStorage.setItem("toDoListData", JSON.stringify(data))
 }
 
+const updateTimestamp = (id) => {
+  const creation_time = data[currentList].entries[id].creation_time
+  const modification_time = data[currentList].entries[id].modification_time
+  const completion_time = data[currentList].entries[id].completion_time
+
+  sbCreationTime.textContent = "Created " + timestampConverter(creation_time)
+  if (modification_time) {
+    sbModificationTime.textContent = "Modified " + timestampConverter(modification_time)
+  } else {
+    sbModificationTime.textContent = ""
+  }
+  if (completion_time) {
+    sbCompletionTime.textContent = "Completed " + timestampConverter(completion_time)
+  } else {
+    sbCompletionTime.textContent = ""
+  }
+}
+
+const timestampConverter = (ts) => {
+  // This solves timezone convertion by default
+  const date = new Date(ts);
+
+  return String(date.getDate()).padStart(2, "0") + "." + 
+  String(date.getMonth()+1).padStart(2, "0") + "." + 
+  date.getFullYear() + " " + 
+  String(date.getHours()).padStart(2, "0") + ":" +
+  String(date.getMinutes()).padStart(2, "0");
+}
 
 
 if (data.length === 0) {addList(false)}
