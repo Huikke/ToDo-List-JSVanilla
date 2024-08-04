@@ -419,10 +419,12 @@ const updateTimestamp = (id) => {
   const creation_time = data[currentList].entries[id].creation_time
   const modification_time = data[currentList].entries[id].modification_time
   const completion_time = data[currentList].entries[id].completion_time
+  // If creation_time and modification time is more than 1 minute apart
+  const tsDiff = (new Date(modification_time) - new Date(creation_time))/1000
 
   sbCreationTime.textContent = "Created " + timestampConverter(creation_time)
-  if (modification_time) {
-    sbModificationTime.textContent = "Modified " + timestampConverter(modification_time)
+  if (modification_time && tsDiff > 60) {
+      sbModificationTime.textContent = "Modified " + timestampConverter(modification_time)
   } else {
     sbModificationTime.textContent = ""
   }
