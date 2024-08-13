@@ -36,8 +36,9 @@ const data = JSON.parse(localStorage.getItem("toDoListData")) || []
 
 let currentList = 0
 let currentId = null
+let currentSubId = null
 let detailsSbWidth = "400px"
-let removeListBool = false
+let removeTargetType = null
 
 
 
@@ -212,6 +213,7 @@ sbNewSeForm.addEventListener("submit", (e) => {
     title: sbNewSeTb.value,
     creation_time: new Date().toISOString(),
     // completion_time: null,
+    // modification_time: null,
   }
 
   data[currentList].entries[currentId].subentries.push(subentryData)
@@ -223,6 +225,14 @@ sbNewSeForm.addEventListener("submit", (e) => {
 sbNewSeCb.addEventListener("change", () => {
   sbNewSeCb.checked = false
 })
+
+const saveSubentry = (element, subId) => {
+  if (data[currentList].entries[currentId].subentries[subId].title != element.textContent) {
+    data[currentList].entries[currentId].subentries[subId].modification_time = new Date().toISOString()
+    data[currentList].entries[currentId].subentries[subId].title = element.textContent
+    updateSubentries()
+  }
+}
 
 sbContent.addEventListener("blur", () => {
   if (data[currentList].entries[currentId].content != sbContent.textContent) {
@@ -250,35 +260,45 @@ const showConfirmDeletePopup = (element) => {
   delPopup.showModal()
 
   if (element.id == "removeList") {
-    removeListBool = true
+    removeTargetType = "list"
     name = data[currentList].title
+  } else if (element.parentElement.id[0] == "s") {
+    removeTargetType = "subentry"
+    currentSubId = Number(element.parentElement.id.slice(1))
+    name = data[currentList].entries[currentId].subentries[currentSubId].title
   } else {
+    removeTargetType = "entry"
     name = data[currentList].entries[currentId].title
   }
 
-  delPopupMsg.textContent = `${name} will be permanently deleted`
+  delPopupMsg.textContent = `"${name}" ${removeTargetType} will be permanently deleted`
 }
 
 delPopupDeleteBtn.addEventListener("click", () => {
-  if (!removeListBool) {
-    data[currentList].entries.splice(currentId, 1)
-  } else if (removeListBool) {
+  if (removeTargetType == "list") {
     if (data.length <= 1) {
       alert("Can't remove the only list!")
     } else {
       data.splice(currentList, 1)
       currentList = 0
     }
+    updateEntries()
+    closeDetails()
+  } else if (removeTargetType == "subentry") {
+    data[currentList].entries[currentId].subentries.splice(currentSubId, 1)
+    updateSubentries()
+  } else if (removeTargetType == "entry") {
+    data[currentList].entries.splice(currentId, 1)
+    updateEntries()
+    closeDetails()
   }
 
-  removeListBool = false
-  updateEntries()
-  closeDetails()
+  removeTargetType = null
   delPopup.close()
 })
 
 delPopupCancelBtn.addEventListener("click", () => {
-  removeListBool = false
+  removeTargetType = null
   delPopup.close()
 })
 
@@ -342,8 +362,8 @@ const moveEntryEnd = () => {
   }
 
   if (moveToIdEl) {
-    startId = Number(moveTargetEl.id.slice(1))
-    endId = Number(moveToIdEl.id.slice(1))
+    startId = Number(moveTargetEl.id.slice(1))  // Remove prefix
+    endId = Number(moveToIdEl.id.slice(1))  // Remove prefix
     itemToMove = data[currentList].entries[startId]
     
     data[currentList].entries.splice(startId, 1)
@@ -429,12 +449,12 @@ const updateSubentries = () => {
 
 
     sbSubentriesContainer.innerHTML += `
-      <article class="sbSubentry" id="se${id}">
+      <article class="sbSubentry" id="s${id}">
           <div class="sbSubentryLeft">
             <input class="sbSubentryCb" type="checkbox" onchange="updateSubState(this, ${id})" ${checked}>
-            <span class="sbSubentryTitle">${element.title}<span>
+            <span class="sbSubentryTitle" contenteditable="true" onblur="saveSubentry(this, ${id})">${element.title}<span>
           </div>
-          <button class="sbSubentryDeleteBtn" onclick="">x</button>
+          <button class="sbSubentryDeleteBtn" onclick="showConfirmDeletePopup(this)">x</button>
       </article>
     `
 

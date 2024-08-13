@@ -90,7 +90,7 @@ main {
   margin-right: 10px;
 }
 
-.entryTitle, .sbSubentry {
+.entryTitle, .sbSubentryTitle {
   overflow-wrap: anywhere;
 }
 
