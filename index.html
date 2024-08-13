@@ -23,10 +23,19 @@
     <div class="detailsSidebar" id="detailsSidebar">
       <div id="dragbar"></div>
       <div class="detailsContainer">
-        <h2 class="sbCbAndTitle">
-          <input class="sbCb" id="sbCb" type="checkbox" onchange="">
-          <span class="sbTitle" id="sbTitle" contenteditable="true"></span>
+        <h2 class="sbHeading">
+          <div class="sbHeadingLeft">
+            <input class="sbCb" id="sbCb" type="checkbox" onchange="">
+            <span class="sbTitle" id="sbTitle" contenteditable="true"></span>
+          </div>
+          <button class="sbShowNewSeFormBtn" id="sbShowNewSeFormBtn">+</button>
         </h2>
+        <div class="sbSubentriesContainer" id="sbSubentriesContainer"></div>
+        <form class="sbNewSeForm" id="sbNewSeForm" type="submit">
+          <input class="sbNewSeCb" id="sbNewSeCb" type="checkbox">
+          <input class="sbNewSeTb" id="sbNewSeTb" type="text">
+          <button class="sbNewSeBtn" id="sbNewSeBtn" onclick="">Add</button>
+        </form>
         <div class="sbContent" id="sbContent" placeholder="Write something" contenteditable="true"></div>
         <div class="sbOptions">
           <button class="sbImportantBtn" id="sbImportantBtn" onclick="">Star</button>

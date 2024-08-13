@@ -10,6 +10,14 @@ const newEntryForm = document.getElementById("newEntryForm")
 const detailsSidebar = document.getElementById("detailsSidebar")
 const sbCb = document.getElementById("sbCb")
 const sbTitle = document.getElementById("sbTitle")
+// Sub-entry starts
+const sbShowNewSeFormBtn = document.getElementById("sbShowNewSeFormBtn")
+const sbSubentriesContainer = document.getElementById("sbSubentriesContainer")
+const sbNewSeForm = document.getElementById("sbNewSeForm")
+const sbNewSeCb = document.getElementById("sbNewSeCb")
+const sbNewSeTb = document.getElementById("sbNewSeTb")
+const sbNewSeBtn = document.getElementById("sbNewSeBtn")
+// Sub-entry ends
 const sbContent = document.getElementById("sbContent")
 const sbImportantBtn = document.getElementById("sbImportantBtn")
 const sbDeleteBtn = document.getElementById("sbDeleteBtn")
@@ -100,6 +108,8 @@ const summonDropdownForm = (element) => {
       <button class="ddMenu">${btnText}</button>
     </form>
   `
+
+  document.getElementById(`${element.id}Tb`).focus()
 }
 
 
@@ -108,6 +118,7 @@ const createEntry = () => {
   const entryData = {
     state: false,
     title: newEntryTb.value,
+    subentries: [],
     content: "",
     important: false,
     creation_time: new Date().toISOString(),
@@ -124,6 +135,8 @@ const createEntry = () => {
 newEntryForm.addEventListener("submit", (e) => {
   e.preventDefault()
   createEntry()
+
+  newEntryTb.focus()
 })
 
 
@@ -156,7 +169,8 @@ const showDetails = (id) => {
     } else {
       sbImportantBtn.classList.remove("important")
     }
-
+    
+    updateSubentries()
     updateTimestamp(id)
 
     window.setTimeout(() => detailsSidebar.style.transition = "0s", 1);
@@ -170,6 +184,7 @@ const closeDetails = () => {
   detailsSidebar.style.width = "0"
   currentId = null
   window.setTimeout(() => detailsSidebar.style.transition = "0s", 1);
+  window.setTimeout(() => sbNewSeForm.classList.remove("showFlex"), 500);
 }
 
 sbCb.addEventListener("change", () => {
@@ -183,6 +198,30 @@ sbTitle.addEventListener("blur", () => {
     updateEntries()
     updateTimestamp(currentId)
   }
+})
+
+sbShowNewSeFormBtn.addEventListener("click", () => {
+  sbNewSeForm.classList.add("showFlex")
+  sbNewSeTb.focus()
+})
+
+sbNewSeForm.addEventListener("submit", (e) => {
+  e.preventDefault()
+  const subentryData = {
+    state: false,
+    title: sbNewSeTb.value,
+    creation_time: new Date().toISOString(),
+    // completion_time: null,
+  }
+
+  data[currentList].entries[currentId].subentries.push(subentryData)
+  updateSubentries()
+
+  sbNewSeTb.value = ""
+})
+
+sbNewSeCb.addEventListener("change", () => {
+  sbNewSeCb.checked = false
 })
 
 sbContent.addEventListener("blur", () => {
@@ -364,10 +403,38 @@ const updateEntries = () => {
             <span class="entryTitle">${element.title}<span>
           </div>
           <div class="entryRight">
-            <button class="moveButton" onmousedown="moveEntryBegin(event, this)">↕</button>
+            <button class="moveBtn" onmousedown="moveEntryBegin(event, this)">↕</button>
             <button class="importantBtn ${important}" onclick="toggleImportant(${id})">star</button>
             <button class="detailsBtn" onclick="showDetails(${id})">...</button>
           </div>
+      </article>
+    `
+
+    id++
+  })
+
+  localStorage.setItem("toDoListData", JSON.stringify(data))
+}
+
+const updateSubentries = () => {
+  sbSubentriesContainer.innerHTML = ""
+  let id = 0
+
+  data[currentList].entries[currentId].subentries.forEach((element) => {
+    // Handles initial checkbox state
+    let checked = ""
+    if (data[currentList].entries[currentId].subentries[id].state) {
+      checked = "checked"
+    }
+
+
+    sbSubentriesContainer.innerHTML += `
+      <article class="sbSubentry" id="se${id}">
+          <div class="sbSubentryLeft">
+            <input class="sbSubentryCb" type="checkbox" onchange="updateSubState(this, ${id})" ${checked}>
+            <span class="sbSubentryTitle">${element.title}<span>
+          </div>
+          <button class="sbSubentryDeleteBtn" onclick="">x</button>
       </article>
     `
 
@@ -409,10 +476,21 @@ const updateState = (element, id) => {
     data[currentList].entries[id].completion_time = null
   }
   updateEntries()
-  if (currentId) {
+  if (currentId == id) {
     updateTimestamp(currentId)
+    sbCb.checked = data[currentList].entries[id].state // Also updates sidebar checkbox
   }
-  sbCb.checked = data[currentList].entries[id].state // Also updates sidebar checkbox
+}
+
+const updateSubState = (element, id) => {
+  if (element.checked == true) {
+    data[currentList].entries[currentId].subentries[id].state = true
+    data[currentList].entries[currentId].subentries[id].completion_time = new Date().toISOString()
+  } else {
+    data[currentList].entries[currentId].subentries[id].state = false
+    data[currentList].entries[currentId].subentries[id].completion_time = null
+  }
+  updateSubentries()
 }
 
 const updateTimestamp = (id) => {

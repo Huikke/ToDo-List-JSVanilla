@@ -90,11 +90,11 @@ main {
   margin-right: 10px;
 }
 
-.entryTitle {
+.entryTitle, .sbSubentry {
   overflow-wrap: anywhere;
 }
 
-.entryLeft {
+.entryLeft, .sbHeadingLeft, .sbSubentryLeft {
   display: flex;
   align-items: flex-start;
 }
@@ -125,6 +125,8 @@ main {
   border-radius: 2px;
 }
 
+
+
 .detailsSidebar {
   height: 100%;
   width: 0px;
@@ -137,8 +139,6 @@ main {
   padding: 20px 0;
 }
 
-
-
 .detailsContainer {
   width: 100%;
   height: calc(100% - 60px);
@@ -146,13 +146,14 @@ main {
   scrollbar-width: thin;
 }
 
-.sbCbAndTitle {
+.sbHeading, .sbNewSeForm, .sbSubentry {
   display: flex;
   background-color: lightcyan;
   padding: 6px;
-  margin: 8px 16px;
+  margin: 8px 16px 0;
   border: 2px solid rgb(46, 145, 145);
   border-radius: 2px;
+  justify-content: space-between;
   align-items: flex-start;
 }
 
@@ -164,6 +165,29 @@ main {
 
 .sbTitle {
   overflow-wrap: anywhere;
+}
+
+.sbShowNewSeFormBtn {
+  min-width: 26px;
+  min-height: 26px;
+  font-size: 14px;
+}
+
+.sbNewSeForm, .sbSubentry {
+  margin-top: -2px;
+  padding: 4px;
+}
+
+.sbNewSeForm {
+  display: none;
+}
+
+.sbNewSeTb {
+  width: 100%;
+}
+
+.sbNewSeBtn {
+  margin-left: 3px;
 }
 
 .sbContent {
@@ -225,6 +249,10 @@ main {
 
 .show {
   display: block;
+}
+
+.showFlex {
+  display: flex;
 }
 
 .onMove {
