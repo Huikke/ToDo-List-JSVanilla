@@ -66,7 +66,7 @@ const addList = (e) => {
 const renameList = (e) => {
   e.preventDefault()
   
-  newName = document.getElementById("renameListTb").value
+  const newName = document.getElementById("renameListTb").value
   listTitle.textContent = newName
   data[currentList].title = newName
   updateListDropdown()
